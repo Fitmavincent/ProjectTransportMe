@@ -10,8 +10,12 @@ if(isset($_POST['regsubmit'])){
   $password = $_POST['password'];
   $firstname = $_POST['firstName'];
   $lastname = $_POST['lastName'];
+  $carmodel = $_POST['carModel'];
+  $carregis = $_POST['carRegistration'];
+  $carcolor = $_POST['carColour'];
+  $carcap = $_POST['capacity'];
 
-if(!preg_match('/^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/', $username)){
+  if(!preg_match('/^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/', $username)){
     echo "invalid email address";
 	exit('Invalid Email<a href="javascript:history.back(-1);">back</a>');
     }
@@ -57,13 +61,17 @@ if(!preg_match('/^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/', $username)){
 //    die('Error uploading file - check destination is writeable.');
 //  }
 
-  $insert_sql = "INSERT INTO users(email, password, firstName, lastName)VALUES('$username','$password','$firstname','$lastname')";
+  //check if driver or not
+  if($carmodel=="" || $carregis=="" || $carcolor=="" || $carcap==""){
+    $isActive = 0;
+  }else{
+    $isActive = 1;
+  }
+
+  $insert_sql = "INSERT INTO users(email, password, firstName, lastName, isActivated)VALUES('$username','$password','$firstname','$lastname', '$isActive')";
 
   if(mysql_query($insert_sql, $conn)){
-    echo ("<SCRIPT LANGUAGE='JavaScript'>
-            window.location.href='home.php'
-            </SCRIPT>");
-    exit();
+    header("Location: home.php");
   }else {
       echo $insert_sql;
 	  echo 'Sorry, sign up failed ',mysql_error(),'<br />';

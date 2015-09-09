@@ -40,7 +40,7 @@ if (isset($_POST['submit'])){
 }
 
 //illegal session
-if (!isset($_SESSION['userID']))
+else if (!isset($_SESSION['userID']))
 {
     //$_SESSION['userID'] = $_SESSION['userID'];
     echo ("<SCRIPT LANGUAGE='JavaScript'>

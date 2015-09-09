@@ -1,3 +1,7 @@
+<?php
+include 'illegalacc.php';
+?>
+
 <!DOCTYPE html>
 
 <html>

@@ -7,9 +7,6 @@ session_start();
 
 //connection to Database
 include 'connection.php';
-//mysql_connect("localhost:8889","root","root") or die("mysql connection is failure.");
-//mysql_select_db("TransportMe") or die("Database does not exist");
-
 
 //login checking
 include 'check.php';

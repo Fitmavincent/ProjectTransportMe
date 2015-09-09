@@ -17,10 +17,10 @@
 
     <script>
         $(document).ready(function(){
-            $("#carinfo").hide();
-            $("#carreg").click(function(){
-                $("#carinfo").show(100);
-            });
+          $("#carinfo").hide();
+          $("#carbtn").click(function(){
+            $("#carinfo").toggle();
+          });
         });
     </script>
 
@@ -117,8 +117,7 @@
                                             <input type="file" name="userimage"><br>
                                         </div>
 
-
-                                        <div class="ui-block-a"><button type="button" data-theme="b" id="carreg">Do You Have A Car?</button></div>
+                                        <button type="button" data-theme="b" id="carbtn">Do you have a car?</button>
                                         <!--Car info-->
                                         <div id="carinfo">
 
@@ -157,7 +156,7 @@
                                             <input type="number" class="form-control input-control" placeholder="Capacity" name="capacity" id="capacity">
                                         </div>
 
-
+                                    </div>
                                         <!--Register Button-->
                                         <div class="form-group col-md-6 col-md-offset-3">
                                             <div class="ui-grid-a">
@@ -166,7 +165,6 @@
                                             </div>
                                         </div>
 
-                                        </div>
                                    </form>
                                 </div>
 
