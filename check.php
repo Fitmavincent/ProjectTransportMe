@@ -21,8 +21,11 @@ if (isset($_POST['submit'])){
         exit();
     }
 
+    //connection to Database
+    include 'connection.php';
+
     //SQL checking in database
-    $checksql = mysql_query("SELECT * FROM users WHERE email='$username' AND password = '$password' limit 1");
+    $checksql = mysql_query("SELECT * FROM user WHERE email='$username' AND password = '$password' limit 1");
     //if user exist, session logged in and session their username and user ID for future use
     if($row = mysql_fetch_array($checksql))
     {
@@ -30,13 +33,16 @@ if (isset($_POST['submit'])){
         $_SESSION['firstName'] = $row['firstName'];
         $_SESSION['lastName'] = $row['lastName'];
         $_SESSION['userID'] = $row['userID'];
-        echo ("<SCRIPT LANGUAGE='JavaScript'>
-            window.location.href='home.php'
-            </SCRIPT>");
-        exit();
+
+        if($row['isDriver'] == 0){
+          header("Location: home_pass.php");
+        }else{
+          header("Location: home_driver.php");
+        }
     }else{
         exit('Login Failed, Invalid User Name or Password! Click here to <a href="javascript:history.back(-1);"> retry </a>');
     }
+
 }
 
 //illegal session

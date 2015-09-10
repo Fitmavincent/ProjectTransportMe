@@ -27,7 +27,7 @@
                         <br /><br />
                         <img alt="140x140" src="img/logo.png" class="img-rounded">
                     </div>
-                    <form id="logins" method='POST' action='home.php'>
+                    <form id="logins" method='POST' action='check.php'>
                         <div class="form-group col-lg-12">
                             <input type="email" class="form-control input-control" placeholder="Email" id="inputEmail3" name="username">
                         </div>

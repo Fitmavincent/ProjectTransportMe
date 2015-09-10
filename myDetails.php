@@ -79,21 +79,23 @@
                                     <form id="detailsPart1" method='POST' enctype="multipart/form-data">
                                         <div class="form-group col-lg-12">
                                             <label for="firstName">First Name <a style="color: red">*</a></label>
-                                            <!--<input type="text" class="form-control input-control" placeholder="First Name" name="firstName" id="firstName">-->
+                                            <input type="text" class="form-control input-control" placeholder="First Name" name="firstName" id="firstName">
+<!--
                                             <?php
-                                            require_once "connection.php";
-                                            session_start();
-                                            $userID = $_SESSION['userID'];
-
-                                            $sql = mysqli_query($conNew,"SELECT * FROM users INNER JOIN profiles ON users.userID = profiles.userID WHERE users.userID='$userID';");
-                                            while ($row = mysqli_fetch_assoc($sql))
-                                            {
-                                                $firstName = $row['firstName'];
-                                                echo "<input type='text' class='form-control input-control' placeholder='First Name' name='firstName' id='firstName' value='$firstName'>";
-                                            }
-
-                                            mysqli_close($conNew);
+//                                            require_once "connection.php";
+//                                            session_start();
+//                                            $userID = $_SESSION['userID'];
+//
+//                                            $sql = mysqli_query($conNew,"SELECT * FROM users INNER JOIN profiles ON users.userID = profiles.userID WHERE users.userID='$userID';");
+//                                            while ($row = mysqli_fetch_assoc($sql))
+//                                            {
+//                                                $firstName = $row['firstName'];
+//                                                echo "<input type='text' class='form-control input-control' placeholder='First Name' name='firstName' id='firstName' value='$firstName'>";
+//                                            }
+//
+//                                            mysqli_close($conNew);
                                             ?>
+-->
                                         </div>
                                         <div class="form-group col-lg-12">
                                             <label for="lastName">Last Name <a style="color: red">*</a></label>
