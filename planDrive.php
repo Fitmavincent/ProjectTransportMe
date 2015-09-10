@@ -97,7 +97,7 @@ include 'illegalacc.php';
                         <!-- Start Title -->
                         <div id="mainTitle">
                             <h3 class="text-center">
-                                Hop on!
+                                Let's Ride!
                             </h3>
                         </div>
                         <!-- End Title -->
@@ -105,7 +105,7 @@ include 'illegalacc.php';
 
 
                         <!-- Destination -->
-                        <form class="form-horizontal" role="form" id="forPassenger" method='POST' action='request_submit.php' data-ajax="false">
+                        <form class="form-horizontal" role="form" id="forPassenger" method='POST' action='passenger_search.php' data-ajax="false">
                             <!-- Start Location -->
                             <div id="startlocation">
                                 <label for="inputPassword3">Start Location:</label>
@@ -134,7 +134,7 @@ include 'illegalacc.php';
                                 </div>
 
                                 <div class="ui-grid-solo">
-                                    <div class="ui-block-a"><button type="submit" data-theme="b" name="sendrequest">Send Request</button></div>
+                                    <div class="ui-block-a"><button type="submit" data-theme="b" name="searchpassenger">Search passenger</button></div>
                                 </div>
                             </div>
                             <!-- Select Departure Time & Submit -->
