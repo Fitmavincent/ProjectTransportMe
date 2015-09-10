@@ -1,6 +1,12 @@
 <?php
 session_start();
+
+if ($_SESSION['isDriver'] == 0){
+
+}
+
 ?>
+
 <section data-role="panel" id="nav" data-display="overlay">
 
     <ul data-role="listview">
@@ -25,13 +31,13 @@ session_start();
             </a>
         </li>
         <li>
-            <a href="forDrivers.php" data-ajax="false" style="background-color: #2a2a2a">
+            <a href="forDrivers.php" data-ajax="false" style="background-color: #2a2a2a" id="driving">
                 <span><img src="icons/car.png" height="20px" width="20px"/></span>
                 Driving
             </a>
         </li>
         <li>
-            <a href="notDriving.php" data-ajax="false" style="background-color: #2a2a2a">
+            <a href="notDriving.php" data-ajax="false" style="background-color: #2a2a2a" id="pass">
                 <span><img src="icons/hail.png" height="20px" width="20px"/></span>
                 Not Driving
             </a>

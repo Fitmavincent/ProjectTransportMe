@@ -1,4 +1,7 @@
 <?php
+session_start();
+
+//illegal access
 include 'illegalacc.php';
 ?>
 

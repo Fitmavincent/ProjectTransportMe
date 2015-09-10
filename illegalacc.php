@@ -6,11 +6,12 @@ session_start();
 
 if (!isset($_SESSION['userID']))
 {
+    header("Location: index.php");
     //$_SESSION['userID'] = $_SESSION['userID'];
-    echo ("<SCRIPT LANGUAGE='JavaScript'>
-            window.location.href='index.php'
-            </SCRIPT>");
-    exit();
+//    echo ("<SCRIPT LANGUAGE='JavaScript'>
+//            window.location.href='index.php'
+//            </SCRIPT>");
+//    exit();
 }
 
 ?>

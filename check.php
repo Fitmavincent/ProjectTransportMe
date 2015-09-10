@@ -4,6 +4,9 @@ session_cache_limiter(false);
 
 session_start();
 
+    //connection to Database
+    include 'connection.php';
+
 //login
 if (isset($_POST['submit'])){
 
@@ -21,9 +24,6 @@ if (isset($_POST['submit'])){
         exit();
     }
 
-    //connection to Database
-    include 'connection.php';
-
     //SQL checking in database
     $checksql = mysql_query("SELECT * FROM user WHERE email='$username' AND password = '$password' limit 1");
     //if user exist, session logged in and session their username and user ID for future use
@@ -35,8 +35,10 @@ if (isset($_POST['submit'])){
         $_SESSION['userID'] = $row['userID'];
 
         if($row['isDriver'] == 0){
+          $_SESSION['isDriver'] = 0;
           header("Location: home_pass.php");
         }else{
+          $_SESSION['isDriver'] = 1;
           header("Location: home_driver.php");
         }
     }else{
