@@ -33,6 +33,7 @@ if (isset($_POST['submit'])){
         $_SESSION['firstName'] = $row['firstName'];
         $_SESSION['lastName'] = $row['lastName'];
         $_SESSION['userID'] = $row['userID'];
+        $_SESSION['isDriver'] = $row['isDriver'];
 
         if($row['isDriver'] == 0){
           $_SESSION['isDriver'] = 0;
