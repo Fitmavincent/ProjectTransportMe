@@ -5,7 +5,7 @@ $ID=$_SESSION['isDriver'];
 
 <!--send the value of ID to cid in javascript.-->
 <script language='javascript'>
-var cid="<? echo $ID?>";
+var cid="<?php echo $ID; ?>";
 
 //    //pas.style.display="none";
 //   if(cid==1) {
@@ -27,7 +27,7 @@ var cid="<? echo $ID?>";
 <div ID="pass">
 <!-- decide which div shows dependent on the value of cid-->
  <script>
-   if (cid==0) {
+   if (cid==1) {
    document.getElementById("pass").style.display="none";
 //    pas.style.display="block";
 //    dri.style.display="none";
@@ -122,7 +122,7 @@ var cid="<? echo $ID?>";
 <div ID="drive" >
     <!-- decide which div shows dependent on the value of cid-->
     <script>
-     if (cid==1) {
+     if (cid==0) {
          document.getElementById("drive").style.display="none";
     }
     </script>
