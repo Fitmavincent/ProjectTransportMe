@@ -86,7 +86,7 @@ include 'illegalacc.php';
                                                 </script>
                             </h3>
                             <div class="ui-grid-a">
-                                <div class="ui-block-a"><button type="button" data-theme="b" onclick="location.href='notDriving.php'" >Request a Ride <?php echo $isDriver?> </button></div>
+                                <div class="ui-block-a"><button type="button" data-theme="b" onclick="location.href='notDriving.php'" >Request a Ride</button></div>
                                 <div class ="ui-block-a"><button type="button" data-theme="b" onclick="location.href='myRides.php'" >My Rides</button></div>
                              </div>
                         <!-- End Main Question -->
