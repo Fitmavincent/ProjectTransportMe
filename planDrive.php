@@ -105,7 +105,7 @@ include 'illegalacc.php';
 
 
                         <!-- Destination -->
-                        <form class="form-horizontal" role="form" id="forPassenger" method='POST' action='passenger_search.php' data-ajax="false">
+                        <form class="form-horizontal" role="form" id="forPassenger" method='POST' action='Geolocation.php' data-ajax="false">
                             <!-- Start Location -->
                             <div id="startlocation">
                                 <label for="inputPassword3">Start Location:</label>

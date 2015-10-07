@@ -17,9 +17,10 @@ if(isset($_POST['regsubmit'])){
   $licence = $_POST['licenceNo'];
   $licenceExp = $_POST['licenceExp'];
   $carmodel = $_POST['carModel'];
-  $carregis = $_POST['carRegistration'];
+  $VIN = $_POST['VIN'];
   $carcolor = $_POST['carColour'];
   $seat = $_POST['capacity'];
+  $plateNumber = $_POST['plateNumber'];
 
   if(!preg_match('/^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/', $username)){
     echo "invalid email address";
@@ -40,7 +41,7 @@ if(isset($_POST['regsubmit'])){
     }
 
   //check if driver or not
-  if($carmodel=="" || $carregis=="" || $carcolor=="" || $seat==""){
+  if($carmodel=="" || $VIN=="" || $carcolor=="" || $seat=="" || $plateNumber==""){
     $isDriver = 0;
     $insert_sql = "INSERT INTO user(email, password, firstName, lastName, isDriver, address, phone, gender)VALUES('$username','$password','$firstname','$lastname', '$isDriver', '$address', '$phone', '$gender')";
 
@@ -53,7 +54,7 @@ if(isset($_POST['regsubmit'])){
       }
     }else{
     $isDriver = 1;
-    $insert_sql = "INSERT INTO user(email, password, firstName, lastName, isDriver, address, phone, gender, driverLisence, expiredDate, carModel, carRegistration, carColour, seat)VALUES('$username','$password','$firstname','$lastname', '$isDriver', '$address', '$phone', '$gender', '$licence', '$licenceExp', '$carmodel', '$carregis', '$carcolor', '$seat')";
+    $insert_sql = "INSERT INTO user(email, password, firstName, lastName, isDriver, address, phone, gender, driverLisence, expiredDate, carModel, VIN, carColour, seat, plateNumber)VALUES('$username','$password','$firstname','$lastname', '$isDriver', '$address', '$phone', '$gender', '$licence', '$licenceExp', '$carmodel', '$VIN', '$carcolor', '$seat', '$plateNumber')";
 
     if(mysql_query($insert_sql, $conn)){
         header("Location: home_driver.php");

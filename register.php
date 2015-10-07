@@ -149,12 +149,16 @@
                                                 </script>
                                             </div>
                                             <div class="form-group col-lg-12">
+                                                <label for="plateNumber" style="color: black;">plateNumber</label>
+                                                <input type="text" class="form-control input-control" placeholder="plateNumber" name="plateNumber" id="plateNumber">
+                                            </div>
+                                            <div class="form-group col-lg-12">
                                                 <label for="carModel" style="color: black;">Car Model</label>
                                                 <input type="text" class="form-control input-control" placeholder="Car Model" name="carModel" id="carModel">
                                             </div>
                                             <div class="form-group col-lg-12">
-                                                <label for="carRegistration" style="color: black;">Car Registration</label>
-                                                <input type="text" class="form-control input-control" placeholder="Car Registration" name="carRegistration" id="carRegistration">
+                                                <label for="VIN" style="color: black;">VIN</label>
+                                                <input type="text" class="form-control input-control" placeholder="VIN" name="VIN" id="VIN">
                                             </div>
                                             <div class="form-group col-lg-12">
                                                 <label for="carColour" style="color: black;">Car Colour</label>

@@ -27,8 +27,6 @@
 //  });
 //}
 
-
-
 var map;
 var waypts = [];
 var directionsDisplay;
@@ -97,6 +95,8 @@ function calculateAndDisplayRoute(directionsService, directionsDisplay) {
     }
   });
 }
+
+
 
 
 
