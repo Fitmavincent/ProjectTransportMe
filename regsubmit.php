@@ -40,7 +40,8 @@ if(isset($_POST['regsubmit'])){
     exit;
     }
 
-    $uploaddir = "userimg/";
+  //Upload profile image
+  $uploaddir = "userimg/";
   $type = array("jpg", "gif", "bmp", "jpeg", "png");
 
 
@@ -52,7 +53,7 @@ if(isset($_POST['regsubmit'])){
 
 
    if ($_FILES['userimage']['size'] > 500000) {
-    echo "File uploaded exceeds maximum upload size";
+    echo "Profile image uploaded exceeds maximum upload size";
    }
   $imgtype = strtolower(fileext($_FILES['userimage']['name']));
   //echo $imgtype;
@@ -60,7 +61,7 @@ if(isset($_POST['regsubmit'])){
    if (!in_array($imgtype, $type))
    {
     $text = implode(",", $type);
-    echo "You can only upload: ", $text, "<br/>";
+    echo "You can only upload: ", $text, " for profile image.<br/>";
    }
    else {
       $filename = explode(".", $_FILES['userimage']['name']);
@@ -71,15 +72,38 @@ if(isset($_POST['regsubmit'])){
       //echo $uploadfile;
   }
   if(!move_uploaded_file($_FILES['userimage']['tmp_name'], $uploadfile)){
-    echo "Error uploading file - check destination is writeable.";
+    echo "Error uploading profile image - check destination is writeable.";
   }
-
   $img = $uploadfile;
+
+
+  //Upload ID image
+  $uploaddir2 = "idimg/";
+  if ($_FILES['idimage']['size'] > 500000) {
+    echo "ID image uploaded exceeds maximum upload size";
+  }
+  $imgtype2 = strtolower(fileext($_FILES['idimage']['name']));
+  if (!in_array($imgtype2, $type))
+  {
+    $text = implode(",", $type);
+    echo "You can only upload: ", $text, " for id image.<br/>";
+  }
+  else {
+    $filename2 = explode(".", $_FILES['idimage']['name']);
+    $filename2[0] = $stuNo;
+    //echo $filename[0];
+    $name2 = implode(".", $filename2);
+    $uploadfile2 = $uploaddir2.$name2;
+  }
+  if(!move_uploaded_file($_FILES['idimage']['tmp_name'], $uploadfile2)){
+    echo "Error uploading ID image - check destination is writeable.";
+  }
+  $idimg = $uploadfile2;
 
   //check if driver or not
   if($carmodel=="" || $VIN=="" || $carcolor=="" || $seat=="" || $plateNumber==""){
     $isDriver = 0;
-    $insert_sql = "INSERT INTO user(email, password, firstName, lastName, isDriver, address, phone, gender, studentID, img)VALUES('$username','$password','$firstname','$lastname', '$isDriver', '$address', '$phone', '$gender', $stuNo, '$img')";
+    $insert_sql = "INSERT INTO user(email, password, firstName, lastName, isDriver, address, phone, gender, studentID, img, studentIDIMG)VALUES('$username','$password','$firstname','$lastname', '$isDriver', '$address', '$phone', '$gender', $stuNo, '$img', '$idimg')";
 
     if(mysql_query($insert_sql, $conn)){
         header("Location: home_pass.php");
@@ -90,7 +114,7 @@ if(isset($_POST['regsubmit'])){
       }
     }else{
     $isDriver = 1;
-    $insert_sql = "INSERT INTO user(email, password, firstName, lastName, isDriver, address, phone, gender, driverLisence, expiredDate, carModel, VIN, carColour, seat, plateNumber, studentID, img)VALUES('$username','$password','$firstname','$lastname', '$isDriver', '$address', '$phone', '$gender', '$licence', '$licenceExp', '$carmodel', '$VIN', '$carcolor', '$seat', '$plateNumber', $stuNo, '$img')";
+    $insert_sql = "INSERT INTO user(email, password, firstName, lastName, isDriver, address, phone, gender, driverLisence, expiredDate, carModel, VIN, carColour, seat, plateNumber, studentID, img, studentIDIMG)VALUES('$username','$password','$firstname','$lastname', '$isDriver', '$address', '$phone', '$gender', '$licence', '$licenceExp', '$carmodel', '$VIN', '$carcolor', '$seat', '$plateNumber', $stuNo, '$img', '$idimg')";
 
     if(mysql_query($insert_sql, $conn)){
         header("Location: home_driver.php");

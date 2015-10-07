@@ -37,6 +37,7 @@ if (isset($_POST['submit'])){
         $_SESSION['address'] = $row['address'];
         $_SESSION['email'] = $row['email'];
         $_SESSION['img'] = $row['img'];
+        $_SESSION['idimg'] = $row['studetnIDIMG'];
 
         if($row['isDriver'] == 0){
           $_SESSION['isDriver'] = 0;

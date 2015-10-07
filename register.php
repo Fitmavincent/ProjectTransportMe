@@ -122,7 +122,11 @@
     -->
                                             <div class="form-group col-lg-12">
                                                 <label for="profileImg" style="color: black;">Profile Image</label>
-                                                <input type="file" name="userimage"><br>
+                                                <input type="file" name="userimage">
+                                            </div>
+                                        <div class="form-group col-lg-12">
+                                                <label for="IDImg" style="color: black;">Student ID Image</label>
+                                                <input type="file" name="idimage"><br>
                                             </div>
                                          <!-- End User Info -->
 
