@@ -35,16 +35,18 @@
                             <input type="password" class="form-control" placeholder="Password" id="inputPassword3" name="password">
                         </div>
                         <div class="form-group col-md-6 col-md-offset-3">
-                            <input type = "submit" class="btn btn-success btn_login" value = "Sign in" name = "submit" id = "log">
+                            <input type = "submit" class="btn btn-success btn_login center-block" value = "Sign in" name = "submit" id = "log">
                         </div>
                     </form>
                     <div class="form-group col-md-6 col-md-offset-3">
-                        <input type="button" class="btn btn-success btn_reg" value="Sign Up" onClick = "parent.location='register.php'" >
+                        <input type="button" class="btn btn-success btn_reg center-block" value="Sign Up" onClick = "parent.location='register.php'" >
                     </div>
                     <br />
                     <div class="form-group col-md-6 col-md-offset-3">
+<!--
                         <img src="img/fb_login.png" height="29px"/>
                         <img src="img/gplus_signin.png" height="29px"/>
+-->
                     </div>
                 </div>
             </div>
