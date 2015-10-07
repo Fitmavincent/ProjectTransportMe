@@ -40,10 +40,46 @@ if(isset($_POST['regsubmit'])){
     exit;
     }
 
+    $uploaddir = "userimg/";
+  $type = array("jpg", "gif", "bmp", "jpeg", "png");
+
+
+   //Get image type
+   function fileext($filename)
+   {
+    return substr(strrchr($filename, '.'), 1);
+   }
+
+
+   if ($_FILES['userimage']['size'] > 500000) {
+    echo "File uploaded exceeds maximum upload size";
+   }
+  $imgtype = strtolower(fileext($_FILES['userimage']['name']));
+  //echo $imgtype;
+   //Check image type
+   if (!in_array($imgtype, $type))
+   {
+    $text = implode(",", $type);
+    echo "You can only upload: ", $text, "<br/>";
+   }
+   else {
+      $filename = explode(".", $_FILES['userimage']['name']);
+      $filename[0] = $stuNo;
+      //echo $filename[0];
+      $name = implode(".", $filename);
+      $uploadfile = $uploaddir.$name;
+      //echo $uploadfile;
+  }
+  if(!move_uploaded_file($_FILES['userimage']['tmp_name'], $uploadfile)){
+    echo "Error uploading file - check destination is writeable.";
+  }
+
+  $img = $uploadfile;
+
   //check if driver or not
   if($carmodel=="" || $VIN=="" || $carcolor=="" || $seat=="" || $plateNumber==""){
     $isDriver = 0;
-    $insert_sql = "INSERT INTO user(email, password, firstName, lastName, isDriver, address, phone, gender)VALUES('$username','$password','$firstname','$lastname', '$isDriver', '$address', '$phone', '$gender')";
+    $insert_sql = "INSERT INTO user(email, password, firstName, lastName, isDriver, address, phone, gender, studentID, img)VALUES('$username','$password','$firstname','$lastname', '$isDriver', '$address', '$phone', '$gender', $stuNo, '$img')";
 
     if(mysql_query($insert_sql, $conn)){
         header("Location: home_pass.php");
@@ -54,7 +90,7 @@ if(isset($_POST['regsubmit'])){
       }
     }else{
     $isDriver = 1;
-    $insert_sql = "INSERT INTO user(email, password, firstName, lastName, isDriver, address, phone, gender, driverLisence, expiredDate, carModel, VIN, carColour, seat, plateNumber)VALUES('$username','$password','$firstname','$lastname', '$isDriver', '$address', '$phone', '$gender', '$licence', '$licenceExp', '$carmodel', '$VIN', '$carcolor', '$seat', '$plateNumber')";
+    $insert_sql = "INSERT INTO user(email, password, firstName, lastName, isDriver, address, phone, gender, driverLisence, expiredDate, carModel, VIN, carColour, seat, plateNumber, studentID, img)VALUES('$username','$password','$firstname','$lastname', '$isDriver', '$address', '$phone', '$gender', '$licence', '$licenceExp', '$carmodel', '$VIN', '$carcolor', '$seat', '$plateNumber', $stuNo, '$img')";
 
     if(mysql_query($insert_sql, $conn)){
         header("Location: home_driver.php");

@@ -3,6 +3,7 @@ session_start();
 
 //illegal access
 include 'illegalacc.php';
+$img = $_SESSION['img'];
 ?>
 
 <!DOCTYPE html>
@@ -89,7 +90,7 @@ include 'illegalacc.php';
                         <!-- Start my profile -->
                         <div class="text-center">
                             <p>&nbsp;</p>
-                            <img src="img/dominic-toretto-auto.png" width="100px" height="105px" class="img-circle" />
+                            <img src="<?php echo $img?>" width="100px" height="105px" class="img-circle" />
                             <h4>
                                 <?php
                                 session_start();

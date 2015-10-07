@@ -1,6 +1,7 @@
 <?php
 session_start();
 $ID=$_SESSION['isDriver'];
+$img = $_SESSION['img'];
 ?>
 
 <!--send the value of ID to cid in javascript.-->
@@ -46,7 +47,7 @@ var cid="<?php echo $ID; ?>";
         <li>
             <a href="profile.php" data-ajax="false" style="background-color: #CD4F39">
                 <h4>
-                    <img src="img/dominic-toretto-auto.png" width="50px" height="50px" class="img-circle" hspace="10" style="border:none;" />
+                    <img src="<?php echo $img ?>" width="50px" height="50px" class="img-circle" hspace="10" style="border:none;" />
                     <?php
                     session_start();
                     $firstName = $_SESSION['firstName'];
@@ -131,7 +132,7 @@ var cid="<?php echo $ID; ?>";
         <li>
             <a href="profile.php" data-ajax="false" style="background-color: #CD4F39">
                 <h4>
-                    <img src="img/dominic-toretto-auto.png" width="50px" height="50px" class="img-circle" hspace="10" style="border:none;" />
+                    <img src="<?php echo $img ?>" width="50px" height="50px" class="img-circle" hspace="10" style="border:none;" />
                     <?php
                     session_start();
                     $firstName = $_SESSION['firstName'];
