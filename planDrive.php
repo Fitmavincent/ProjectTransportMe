@@ -11,6 +11,9 @@ include 'check.php';
 //illegal session
 include 'illegalacc.php';
 
+//get driver address
+$address = $_SESSION['address'];
+
 ?>
 
 
@@ -109,7 +112,7 @@ include 'illegalacc.php';
                             <!-- Start Location -->
                             <div id="startlocation">
                                 <label for="inputPassword3">Start Location:</label>
-                                <input type="text" class="form-control boxNotDriving" id="startpoint" name="startlocation" value="Current Location">
+                                <input type="text" class="form-control boxNotDriving" id="startpoint" name="startlocation" value="<?php echo $address ?>">
                                 <button class=" ui-btn ui-btn-b ui-shadow ui-corner-all" type="button" data-theme="b" onclick="getLocation()" name="gerCurrentLocation">Get Location</button>
                                 <div class="ui-grid-solo">
                             </div>
