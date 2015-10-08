@@ -109,10 +109,28 @@ include 'illegalacc.php';
                             <!-- Start Location -->
                             <div id="startlocation">
                                 <label for="inputPassword3">Start Location:</label>
-                                <input type="text" class="form-control boxNotDriving" id="destination" name="startlocation" value="Current Location">
+                                <input type="text" class="form-control boxNotDriving" id="startpoint" name="startlocation" value="Current Location">
+                                <button class=" ui-btn ui-btn-b ui-shadow ui-corner-all" type="button" data-theme="b" onclick="getLocation()" name="gerCurrentLocation">Get Location</button>
                                 <div class="ui-grid-solo">
                             </div>
                             </div>
+                            <script>
+                                var x = document.getElementById("startpoint");
+                                function getLocation() {
+                                    if (navigator.geolocation) {
+                                        navigator.geolocation.getCurrentPosition(showPosition);
+                                    } else {
+                                        x.value = "Geolocation is not supported by this browser.";
+                                    }
+                                }
+                                function showPosition(position) {
+                                    var pos = {
+                                        lat: position.coords.latitude,
+                                        lng: position.coords.longitude
+                                    };
+                                    x.value = pos.lat + ", " + pos.lng;
+                                }
+                            </script>
                             <!-- End Start Location -->
                             <div id="destination">
                                 <label for="inputPassword3">Destination:</label>
