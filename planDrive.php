@@ -117,6 +117,7 @@ $address = $_SESSION['address'];
                                 <div class="ui-grid-solo">
                             </div>
                             </div>
+                            <!--Start of Geolocation-->
                             <script>
                                 var x = document.getElementById("startpoint");
                                 function getLocation() {
@@ -134,6 +135,7 @@ $address = $_SESSION['address'];
                                     x.value = pos.lat + ", " + pos.lng;
                                 }
                             </script>
+                            <!--End of Geolocation-->
                             <!-- End Start Location -->
                             <div id="destination">
                                 <label for="inputPassword3">Destination:</label>
