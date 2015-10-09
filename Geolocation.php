@@ -22,6 +22,7 @@ $d_status = "pending";
 
 $passenger_query = mysql_query("SELECT * FROM request, user WHERE (departureTime - INTERVAL 1 HOUR < '$d_time') AND (departureTime > '$d_time') AND user.userID = request.passengerID AND status = 'pending' ORDER BY departureTime");
 
+//get Driver location
 $driverStart = "";
 $driver_query = mysql_query("SELECT address FROM user WHERE user.isDriver = 1 AND user.userID = '$d_id' limit 1");
 while($row = mysql_fetch_array($driver_query)){
@@ -71,21 +72,90 @@ while($row = mysql_fetch_array($passengerList_query)){
         padding: 0;
       }
       #map {
-        height: 100%;
+        width: 100%;
+        height: 380px;
       }
     </style>
-<!--    <script src="googlemap.js"></script>-->
+
+
+  </head>
+
+<body>
+    <div data-role="page" data-theme="a">
+    <!--start top bar-->
+    <div data-role="header" id="header_brown">
+        <?php require("banner.php"); ?>
+    </div>
+    <!--end top bar-->
+
+    <!--nav bar-->
+    <?php require("menu.php"); ?>
+    <!--end nav bar-->
+
+<!--<section class = "info">-->
+    <section class="info">
+        <div class="info-body">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-3"></div>
+                    <div class="col-md-6">
+                        <!-- Start Title -->
+                        <div id="mainTitle">
+
+                            <h3 class="text-center">
+                                Results
+                            </h3>
+                        </div>
+                        <!-- End Title -->
+
+                        <!-- Start Rides info -->
+
+                        <!--Google Map-->
+                        <div id="map"></div>
+                        <!--Google Map-->
+
+                        <div class="ui-content">
+                            <ul data-role="listview" data-inset="true">
+                                <?php
+                                while($row = mysql_fetch_array($passengerINFO_query))
+                                { ?>
+                                <li data-icon="false" class="current">
+                                    <h3><?php echo "{$row['firstName']}"?>
+                                        <?php echo "{$row['lastName']}"?>
+                                    </h3>
+                                    <br/>
+                                    <p><b>Location:</b> <?php echo "{$row['startLocation']}"?></p>
+                                    <p><b>Departure Time:</b> <?php echo "{$row['departureTime']}"?></p>
+                                    <p><b>Destination:</b> <?php echo "UQ"?></p>
+                                    <p><b>Contact:</b> <?php echo "{$row['phone']}"?></p>
 <!--
-// Note: This example requires that you consent to location sharing when
-// prompted by your browser. If you see the error "The Geolocation service
-// failed.", it means you probably did not give permission for the browser to
-// locate you.
+                                    <p class='ui-li-aside' style="right: 2em;">
+                                        <a href="#popupDialog" data-rel="popup" data-position-to="window" data-role="button" data-inline="true" data-transition="pop" class="btn-default btn-sm">
+                                            <span class="glyphicon glyphicon-trash"></span> Cancel
+                                        </a>
+                                    </p>
 -->
-<script>
+                                    <p class='ui-li-aside' style="right: 10em;">
+                                        <a href="#popupDialog" data-rel="popup" data-position-to="window" data-role="button" data-inline="true" data-transition="pop" class="btn-default btn-sm">
+                                            <span></span> Select
+                                        </a>
+                                    </p>
+                                </li>
+                                <?php
+                                }
+                                ?>
+                            </ul>
+
+    </section>
+</div>
+
+</body>
+
+<script type="text/javascript">
 var nametag = <?php echo json_encode($username);?>;
 var mobile = <?php echo json_encode($phone);?>;
-var passpts = <?php echo json_encode($passengers_addr);?>;
-var startLoc = <?php echo json_encode($driverStart);?>;
+var passpts = <?php echo json_encode($passengers_addr);?>; // passengers location, waypoints
+var startLoc = <?php echo json_encode($driverStart);?>; // driver start location
 
 var map;
 var waypts = [];
@@ -93,10 +163,14 @@ var waypts = [];
 var directionsDisplay;
 var directionsService;
 
+var uq = "-27.4954306,153.0120301";
+
 function initMap() {
+
   //Instantiate a directions service
   var directionsService = new google.maps.DirectionsService;
 
+  var distanceService = new google.maps.DistanceMatrixService;
 
   //Create a map
   var initcentre = new google.maps.LatLng(-27.4073899,153.0028595); //-27.4073899,153.0028595
@@ -105,7 +179,7 @@ function initMap() {
     zoom: 6
   }
 
-  map = new google.maps.Map(document.getElementById('map'), mapOptions);
+  map = new google.maps.Map(document.getElementById("map"), mapOptions);
 
   var rendererOptions = {
     map: map,
@@ -113,19 +187,45 @@ function initMap() {
   }
   directionsDisplay = new google.maps.DirectionsRenderer(rendererOptions);
 
-//  var wayptsContent;
-
-
   wayptsDisplay = new google.maps.InfoWindow();
 
   calculateAndDisplayRoute(directionsService, directionsDisplay);
 }
 
+//google.maps.event.addDomListener(window, 'load', initMap);
+//function calculateDistance(distanceService, startPoint, singleWaypts){
+//    distanceService.getDistanceMatrix({
+//      origins: startPoint,
+//      destinations: singleWaypts,
+//      travelMode: google.maps.TravelMode.DRIVING,
+//      unitSystem: google.maps.UnitSystem.METRIC,
+//      durationInTraffic: true,
+//      avoidHighways: false,
+//      avoidTolls: true
+//    }, function(response, status){
+//        if(status === google.maps.DistanceMatrixStatus.OK){
+//          var origins = response.originAddresses;
+//          var destination = response.destinationAdresses;
+//
+//          for(var i=0; i<origins.length; i++){
+//            var results = response.rows[i].elements;
+//            for(var j=0; j<results.length; j++){
+//              var element = results[j];
+//              var distance = element.distance.text;
+//              var duration = element.duration.text;
+//            }
+//          }
+//        }
+//    });
+//}
+
 function calculateAndDisplayRoute(directionsService, directionsDisplay) {
 
   var mallCenter = new google.maps.LatLng(-27.4998373,152.9724514);
   var uq = new google.maps.LatLng(-27.4954306,153.0120301);
+  //var uq = new google.maps.LatLng(-27.4954306,153.0120301);
   //var passby = new google.maps.LatLng(-27.501264,152.979343);
+
 
   //Remove any Existing markers from the map
   for(var i=0; i<waypts.length; i++){
@@ -133,11 +233,12 @@ function calculateAndDisplayRoute(directionsService, directionsDisplay) {
   }
 
   //Add waypoints
-  for(var i=0; i<passpts.length; i++){
+  for(var i=0; i<passpts.length; i++){//passpts = waypoints addresses
     waypts.push({
     location: passpts[i],
     stopover: true
   });
+
   }
 
 
@@ -192,89 +293,7 @@ function calculateAndDisplayRoute(directionsService, directionsDisplay) {
   });
 }
 
-
-//function addressToLocation(address){
-//  var geocoder = new google.maps.Geocoder();
-//  geocoder.geocode(){
-//    address: address
-//  },
-//  function(results, status){
-//    var resultLocations = [];
-//  }
-//}
 </script>
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDubSC2d1uLs5lb-Lio6u0IQq4tzvHNpTQ&signed_in=true&callback=initMap" async defer>
 </script>
-  </head>
-
-<body>
-    <div data-role="page" data-theme="a">
-    <!--start top bar-->
-    <div data-role="header" id="header_brown">
-        <?php require("banner.php"); ?>
-    </div>
-    <!--end top bar-->
-
-    <!--nav bar-->
-    <?php require("menu.php"); ?>
-    <!--end nav bar-->
-
-<!--<section class = "info">-->
-    <section class="info">
-        <div class="info-body">
-            <div class="container">
-                <div class="row">
-                    <div class="col-md-3"></div>
-                    <div class="col-md-6">
-                        <!-- Start Title -->
-                        <div id="mainTitle">
-
-                            <h3 class="text-center">
-                                Results
-                            </h3>
-                        </div>
-                        <!-- End Title -->
-
-                        <!-- Start Rides info -->
-
-                        <!--Google Map-->
-                        <div id="map" style="width:100%;height:380px;"></div>
-                        <!--Google Map-->
-
-                        <div class="ui-content">
-                            <ul data-role="listview" data-inset="true">
-                                <?php
-                                while($row = mysql_fetch_array($passengerINFO_query))
-                                { ?>
-                                <li data-icon="false" class="current">
-                                    <h3><?php echo "{$row['firstName']}"?>
-                                        <?php echo "{$row['lastName']}"?>
-                                    </h3>
-                                    <br/>
-                                    <p><b>Location:</b> <?php echo "{$row['startLocation']}"?></p>
-                                    <p><b>Departure Time:</b> <?php echo "{$row['departureTime']}"?></p>
-                                    <p><b>Destination:</b> <?php echo "UQ"?></p>
-                                    <p><b>Contact:</b> <?php echo "{$row['phone']}"?></p>
-<!--
-                                    <p class='ui-li-aside' style="right: 2em;">
-                                        <a href="#popupDialog" data-rel="popup" data-position-to="window" data-role="button" data-inline="true" data-transition="pop" class="btn-default btn-sm">
-                                            <span class="glyphicon glyphicon-trash"></span> Cancel
-                                        </a>
-                                    </p>
--->
-                                    <p class='ui-li-aside' style="right: 10em;">
-                                        <a href="#popupDialog" data-rel="popup" data-position-to="window" data-role="button" data-inline="true" data-transition="pop" class="btn-default btn-sm">
-                                            <span></span> Select
-                                        </a>
-                                    </p>
-                                </li>
-                                <?php
-                                }
-                                ?>
-                            </ul>
-
-    </section>
-</div>
-
-</body>
 </html>
