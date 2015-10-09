@@ -105,6 +105,7 @@ while($row = mysql_fetch_array($passengerList_query)){
                             <h3 class="text-center">
                                 Results
                             </h3>
+                            <div id="dvDistance"></div>
                         </div>
                         <!-- End Title -->
 
@@ -163,14 +164,14 @@ var waypts = [];
 var directionsDisplay;
 var directionsService;
 
+var dis;
+
 var uq = "-27.4954306,153.0120301";
 
 function initMap() {
 
   //Instantiate a directions service
   var directionsService = new google.maps.DirectionsService;
-
-  var distanceService = new google.maps.DistanceMatrixService;
 
   //Create a map
   var initcentre = new google.maps.LatLng(-27.4073899,153.0028595); //-27.4073899,153.0028595
@@ -181,6 +182,7 @@ function initMap() {
 
   map = new google.maps.Map(document.getElementById("map"), mapOptions);
 
+  //Render direction Display
   var rendererOptions = {
     map: map,
     suppressMarkers: false
@@ -193,31 +195,36 @@ function initMap() {
 }
 
 //google.maps.event.addDomListener(window, 'load', initMap);
-//function calculateDistance(distanceService, startPoint, singleWaypts){
-//    distanceService.getDistanceMatrix({
-//      origins: startPoint,
-//      destinations: singleWaypts,
-//      travelMode: google.maps.TravelMode.DRIVING,
-//      unitSystem: google.maps.UnitSystem.METRIC,
-//      durationInTraffic: true,
-//      avoidHighways: false,
-//      avoidTolls: true
-//    }, function(response, status){
-//        if(status === google.maps.DistanceMatrixStatus.OK){
-//          var origins = response.originAddresses;
-//          var destination = response.destinationAdresses;
+
+function calculateDistance(startLocation, endLocation){
+    var distanceService = new google.maps.DistanceMatrixService;
+    distanceService.getDistanceMatrix({
+      origins: [startLocation],
+      destinations: [endLocation],
+      travelMode: google.maps.TravelMode.DRIVING,
+      unitSystem: google.maps.UnitSystem.METRIC,
+      avoidHighways: false,
+      avoidTolls: true
+  }, function(response, status){
+      if (status === google.maps.DistanceMatrixStatus.OK && response.rows[0].elements[0].status != "ZERO_RESULTS"){
+          var distance = response.rows[0].elements[0].distance.value;
+          dis = distance;
+          var duration = response.rows[0].elements[0].duration.value;
+//          var dvDistance = document.getElementById("dvDistance");
+//          dvDistance.innerHTML = "";
+//          dvDistance.innerHTML += "Distance: " + dis;
+//          dvDistance.innerHTML += "Duration: " + duration;
 //
-//          for(var i=0; i<origins.length; i++){
-//            var results = response.rows[i].elements;
-//            for(var j=0; j<results.length; j++){
-//              var element = results[j];
-//              var distance = element.distance.text;
-//              var duration = element.duration.text;
-//            }
+//          if(dis > 5000){
+//            dvDistance.innerHTML += " greater than 5km";
 //          }
-//        }
-//    });
-//}
+
+      }else {
+          alert("Unable to find the distance");
+      }
+  });
+
+}
 
 function calculateAndDisplayRoute(directionsService, directionsDisplay) {
 
@@ -232,15 +239,18 @@ function calculateAndDisplayRoute(directionsService, directionsDisplay) {
     waypts[i].setMap(null);
   }
 
+  var tempStart = startLoc;
   //Add waypoints
   for(var i=0; i<passpts.length; i++){//passpts = waypoints addresses
-    waypts.push({
-    location: passpts[i],
-    stopover: true
-  });
-
+      calculateDistance(tempStart, passpts[i])
+      if (dis < 5000){
+        waypts.push({
+        location: passpts[i],
+        stopover: true
+        });
+      }
+      tempStart = passpts[i];
   }
-
 
   directionsService.route({
     origin: startLoc, // need changes to current location
@@ -255,38 +265,6 @@ function calculateAndDisplayRoute(directionsService, directionsDisplay) {
     if (status === google.maps.DirectionsStatus.OK) {
       directionsDisplay.setDirections(response);
 
-//      var getRoute = response.routes[0];
-//
-//      for (var i=0; i<getRoute.legs.length; i++){
-//
-//      }
-
-//      var marker = new google.maps.Marker({
-//      position: {lat: -27.501264, lng: 152.979343},
-//      map: map,
-//      draggable:false,
-//      title:"marker",
-//      animation: google.maps.Animation.DROP
-//});
-//      marker.addListener('click', function(){
-//          if(wayptsDisplay.open()){
-//              wayptsDisplay.close();
-//          }
-//          wayptsDisplay.open(map, marker);
-//      });
-
-      //var route = response.routes[0];
-//      var summaryPanel = document.getElementById('directions-panel');
-//      summaryPanel.innerHTML = '';
-//      // For each route, display summary information.
-//      for (var i = 0; i < route.legs.length; i++) {
-//        var routeSegment = i + 1;
-//        summaryPanel.innerHTML += '<b>Route Segment: ' + routeSegment +
-//            '</b><br>';
-//        summaryPanel.innerHTML += route.legs[i].start_address + ' to ';
-//        summaryPanel.innerHTML += route.legs[i].end_address + '<br>';
-//        summaryPanel.innerHTML += route.legs[i].distance.text + '<br><br>';
-//      }
     } else {
       window.alert('Directions request failed due to ' + status);
     }
