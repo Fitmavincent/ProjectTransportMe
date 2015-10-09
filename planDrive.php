@@ -35,7 +35,7 @@ $address = $_SESSION['address'];
     <!-- DATE TIME PICKER -->
     <link rel="stylesheet" type="text/css" href="js/src/DateTimePicker.css" />
 
-    <script type="text/javascript" src="js/src/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="js/jquery-1.11.0.min.js"></script>
     <script type="text/javascript" src="js/src/DateTimePicker.js"></script>
 
     <!--[if lt IE 9]>
