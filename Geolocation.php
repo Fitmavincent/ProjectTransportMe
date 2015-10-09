@@ -239,17 +239,17 @@ function calculateAndDisplayRoute(directionsService, directionsDisplay) {
     waypts[i].setMap(null);
   }
 
-  var tempStart = startLoc;
+//  var tempStart = startLoc;
   //Add waypoints
   for(var i=0; i<passpts.length; i++){//passpts = waypoints addresses
-      calculateDistance(tempStart, passpts[i])
-      if (dis < 5000){
+//      calculateDistance(tempStart, passpts[i])
+//      if (dis < 5000){
         waypts.push({
         location: passpts[i],
         stopover: true
         });
-      }
-      tempStart = passpts[i];
+//      }
+//      tempStart = passpts[i];
   }
 
   directionsService.route({
