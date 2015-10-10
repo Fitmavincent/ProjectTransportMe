@@ -171,7 +171,7 @@ function calculateDistance(startLocation, endLocation){
                         <!--Google Map-->
 <!--                        <div id="map"></div>-->
                         <!--Google Map-->
-                    <form>
+                    <form class="form-horizontal" role="form" id="forPassenger" method='POST' action='Geolocation2.php' data-ajax="false">
                         <div class="ui-content">
                             <ul data-role="listview" data-inset="true">
 <?php
@@ -198,19 +198,23 @@ function calculateDistance(startLocation, endLocation){
                                         </a>
                                     </p>
 -->
+<!--
                                     <p class='ui-li-aside' style="right: 10em;">
                                         <a href="#popupDialog" data-rel="popup" data-position-to="window" data-role="button" data-inline="true" data-transition="pop" class="btn-default btn-sm">
                                             <span></span> Select
                                         </a>
                                     </p>
+-->
+                               <div class="ui-block-a"><button type="submit" data-theme="b" name="passSelect">Select</button></div>
                                 </li>
                                 <?php
                                 }
                                 ?>
                             </ul>
 
-    </section>
+
 </div>
-                    </form>
+</form>
+</section>
 </body>
 </html>
