@@ -14,6 +14,12 @@ $d_destination = $_POST['destination'];
 $d_time = $_POST['leavingTime'];
 $d_status = "pending";
 
+//echo $d_id;
+//echo $d_start;
+//echo $d_destination;
+//echo $d_time;
+//echo $d_status;
+
 $passenger_query = mysql_query("SELECT * FROM request, user WHERE (departureTime - INTERVAL 1 HOUR < '$d_time') AND (departureTime > '$d_time') AND user.userID = request.passengerID AND status = 'pending' ORDER BY departureTime");
 
 //get Driver location
@@ -26,7 +32,7 @@ while($row = mysql_fetch_array($driver_query)){
 
 $passengerINFO_query = mysql_query("SELECT startLocation, firstName, lastName, phone FROM user, request	WHERE user.userID = request.passengerID");
 
-$passengerList_query = mysql_query("SELECT startLocation, firstName, lastName, phone FROM user, request	WHERE user.userID = request.passengerID");
+$passengerList_query = mysql_query("SELECT startLocation, firstName, lastName, phone FROM user, request	WHERE user.userID = request.passengerID limit 4");
 $passengers_addr = array();
 $username = array();
 $phone = array();
@@ -99,8 +105,8 @@ while($row = mysql_fetch_array($passengerList_query)){
                             <h3 class="text-center">
                                 Results
                             </h3>
+                            <div id="distanceAmount"></div>
                             <div id="dvDistance"></div>
-                            <div id="dvTest"></div>
                         </div>
                         <!-- End Title -->
 
@@ -159,7 +165,6 @@ var waypts = [];
 var directionsDisplay;
 var directionsService;
 
-var dis = 0;
 var uq = "-27.4954306,153.0120301";
 
 function initMap() {
@@ -176,23 +181,23 @@ function initMap() {
 
   map = new google.maps.Map(document.getElementById("map"), mapOptions);
 
-  //Render directionDisplay
+  //Render direction Display
   var rendererOptions = {
     map: map,
     suppressMarkers: false
   }
   directionsDisplay = new google.maps.DirectionsRenderer(rendererOptions);
 
-  //Instantiate infoWindow
   wayptsDisplay = new google.maps.InfoWindow();
 
-  //call function calculateAndDisplayRoute
+
   calculateAndDisplayRoute(directionsService, directionsDisplay);
 }
 
-//google.maps.event.addDomListener(window, 'load', initMap);
+
 
 function calculateDistance(startLocation, endLocation){
+    var dis;
     var distanceService = new google.maps.DistanceMatrixService;
     distanceService.getDistanceMatrix({
       origins: [startLocation],
@@ -202,48 +207,82 @@ function calculateDistance(startLocation, endLocation){
       avoidHighways: false,
       avoidTolls: true
   }, function(response, status){
-       if (status === google.maps.DistanceMatrixStatus.OK && response.rows[0].elements[0].status != "ZERO_RESULTS"){
-           var distance = response.rows[0].elements[0].distance.value;
-           var duration = response.rows[0].elements[0].duration.value;
-           dis = distance;
-           console.log(distance);
-           console.log(dis);
-       } else {
-           alert("Unable to find the distance via the road.");
-       }
-    });
+      if (status === google.maps.DistanceMatrixStatus.OK && response.rows[0].elements[0].status != "ZERO_RESULTS"){
+          var distance = response.rows[0].elements[0].distance.value;
+          dis = distance;
+          var duration = response.rows[0].elements[0].duration.value;
+          //var dvDistance = document.getElementById("dvDistance");
+//          var test = document.getElementById("distanceAmount");
+//          test.innerHTML = dis;
+//          dvDistance.innerHTML = "";
+//          dvDistance.innerHTML += "Distance: " + dis;
+//          dvDistance.innerHTML += "Duration: " + duration;
+//          if(dis > 5000){
+//            dvDistance.innerHTML += " greater than 5km";
+//          }
+
+      }else {
+          alert("Unable to find the distance");
+      }
+  });
 }
 
 function calculateAndDisplayRoute(directionsService, directionsDisplay) {
 
-  //var mallCenter = new google.maps.LatLng(-27.4998373,152.9724514);
-  //var uq = new google.maps.LatLng(-27.4954306,153.0120301);
+  var dis = 0;
+
+  var distanceService = new google.maps.DistanceMatrixService;
+
+  var mallCenter = new google.maps.LatLng(-27.4998373,152.9724514);
+  var uq = new google.maps.LatLng(-27.4954306,153.0120301);
   //var uq = new google.maps.LatLng(-27.4954306,153.0120301);
   //var passby = new google.maps.LatLng(-27.501264,152.979343);
+
 
   //Remove any Existing markers from the map
   for(var i=0; i<waypts.length; i++){
     waypts[i].setMap(null);
   }
 
-  calculateDistance(startLoc, passpts[3]);
-
-  //var tempStart = startLoc;
-
-  //Add waypoints into waypts array
+  var tempStart = startLoc;
+  //Add waypoints
   for(var i=0; i<passpts.length; i++){//passpts = waypoints addresses
-//      calculateDistance(tempStart, passpts[i]);
-      waypts.push({
-        location: passpts[i],
-        stopover: true
-      });
-      //tempStart = passpts[i];
-    }
+    distanceService.getDistanceMatrix({
+      origins: [tempStart],
+      destinations: [passpts[i]],
+      travelMode: google.maps.TravelMode.DRIVING,
+      unitSystem: google.maps.UnitSystem.METRIC,
+      avoidHighways: false,
+      avoidTolls: true
+  }, function(response, status){
+      if (status === google.maps.DistanceMatrixStatus.OK && response.rows[0].elements[0].status != "ZERO_RESULTS"){
+          var distance = response.rows[0].elements[0].distance.value;
+          dis = distance;
+          var duration = response.rows[0].elements[0].duration.value;
+//          var dvDistance = document.getElementById("dvDistance");
+//          //var test = document.getElementById("distanceAmount");
+//          //test.innerHTML = dis;
+//          dvDistance.innerHTML = "";
+//          dvDistance.innerHTML += "Distance: " + dis;
+//          dvDistance.innerHTML += "Duration: " + duration;
 
+          if(dis > 5000){
+//            dvDistance.innerHTML += " greater than 5km";
+          }
+          else{
+//              var test = document.getElementById("distanceAmount");
+//              test.innerHTML += dis;
+              //test.innerHTML += passpts[i];
+              waypts.push({
+                  location: response.destinationAddresses[0],
+                  stopover: true
+              });
+//              test.innerHTML += waypts[waypts.length - 1].location;
+          }
 
-  directionsService.route({
-    origin: startLoc, //driver current location / registered address
-    destination: uq, //preset to UQ
+    directionsService.route({
+    origin: startLoc, // need changes to current location
+    destination: uq,
     waypoints: waypts,
     optimizeWaypoints: true,
     travelMode: google.maps.TravelMode.DRIVING,
@@ -258,8 +297,46 @@ function calculateAndDisplayRoute(directionsService, directionsDisplay) {
       window.alert('Directions request failed due to ' + status);
     }
   });
-}
 
+
+      }else {
+          alert("Unable to find the distance");
+      }
+  });
+
+//      calculateDistance(tempStart, passpts[i]);
+//      var test = document.getElementById("distanceAmount");
+//      test.innerHTML = calculateDistance(tempStart, passpts[i]);
+
+//      if (dis < 5000){
+//        var test = document.getElementById("distanceAmount");
+//        waypts.push({
+//        location: passpts[i],
+//        stopover: true
+//        });
+//        test.innerHTML += waypts[waypts.length - 1].location;
+//      }
+      tempStart = passpts[i];
+  }
+
+//  directionsService.route({
+//    origin: startLoc, // need changes to current location
+//    destination: uq,
+//    waypoints: waypts,
+//    optimizeWaypoints: true,
+//    travelMode: google.maps.TravelMode.DRIVING,
+//    unitSystem: google.maps.UnitSystem.METRIC,
+//    avoidHighways: false,
+//    avoidTolls: true
+//  }, function(response, status) {
+//    if (status === google.maps.DirectionsStatus.OK) {
+//      directionsDisplay.setDirections(response);
+//
+//    } else {
+//      window.alert('Directions request failed due to ' + status);
+//    }
+//  });
+}
 
 </script>
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDubSC2d1uLs5lb-Lio6u0IQq4tzvHNpTQ&signed_in=true&callback=initMap" async defer>

@@ -14,12 +14,6 @@ $d_destination = $_POST['destination'];
 $d_time = $_POST['leavingTime'];
 $d_status = "pending";
 
-//echo $d_id;
-//echo $d_start;
-//echo $d_destination;
-//echo $d_time;
-//echo $d_status;
-
 $passenger_query = mysql_query("SELECT * FROM request, user WHERE (departureTime - INTERVAL 1 HOUR < '$d_time') AND (departureTime > '$d_time') AND user.userID = request.passengerID AND status = 'pending' ORDER BY departureTime");
 
 //get Driver location
@@ -30,9 +24,9 @@ while($row = mysql_fetch_array($driver_query)){
 }
 
 
-$passengerINFO_query = mysql_query("SELECT startLocation, firstName, lastName, phone FROM user, request	WHERE user.userID = request.passengerID");
+$passengerINFO_query = mysql_query("SELECT startLocation, firstName, lastName, phone FROM user, request	WHERE user.userID = request.passengerID limit 4");
 
-$passengerList_query = mysql_query("SELECT startLocation, firstName, lastName, phone FROM user, request	WHERE user.userID = request.passengerID");
+$passengerList_query = mysql_query("SELECT startLocation, firstName, lastName, phone FROM user, request	WHERE user.userID = request.passengerID limit 4");
 $passengers_addr = array();
 $username = array();
 $phone = array();
@@ -77,7 +71,69 @@ while($row = mysql_fetch_array($passengerList_query)){
       }
     </style>
 
+<script type="text/javascript">
+var nametag = <?php echo json_encode($username);?>;
+var mobile = <?php echo json_encode($phone);?>;
+var passpts = <?php echo json_encode($passengers_addr);?>; // passengers location, waypoints
+var startLoc = <?php echo json_encode($driverStart);?>; // driver start location
 
+var map;
+var waypts = [];
+
+var directionsDisplay;
+var directionsService;
+
+var uq = "-27.4954306,153.0120301";
+
+function initMap(){
+
+}
+
+
+function calculateDistance(startLocation, endLocation){
+    //var dis;
+    var distanceService = new google.maps.DistanceMatrixService;
+    distanceService.getDistanceMatrix({
+      origins: [startLocation],
+      destinations: [endLocation],
+      travelMode: google.maps.TravelMode.DRIVING,
+      unitSystem: google.maps.UnitSystem.METRIC,
+      avoidHighways: false,
+      avoidTolls: true
+  }, function(response, status){
+      if (status === google.maps.DistanceMatrixStatus.OK && response.rows[0].elements[0].status != "ZERO_RESULTS"){
+          var origin = response.originAddresses;
+          var destination = response.destinationAddresses;
+          var distance = response.rows[0].elements[0].distance.value;
+          var distanceText = response.rows[0].elements[0].distance.text;
+          dis = distance;
+          var duration = response.rows[0].elements[0].duration.value;
+          var dvDistance = document.getElementById("dvDistance");
+//          var dvTest = document.getElementById("dvTest");
+//          var dvShow = document.getElementById("gdata");
+
+//          dvShow.innerHTML += origin + ": " + distanceText;
+//          test.innerHTML = dis;
+//          dvDistance.innerHTML = "";
+          dvDistance.innerHTML += "Distance: " + dis + "; ";
+//          dvDistance.innerHTML += "Duration: " + duration;
+//          if(dis > 5000){
+//            dvDistance.innerHTML = dis + " d greater than 5km";
+//          }
+//          if (dis < 8000){
+//            //dvDistance.innerHTML += dis + "d less than 5km";
+//            dvTest.innerHTML += "<ul data-role='listview' data-inset='true'><li data-icon='false' class='current'><p><b><a>" + destination + dis + "</a></b></p></li></ul>";
+//        }
+
+      }else {
+          alert("Unable to find the distance");
+      }
+  });
+}
+
+</script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDubSC2d1uLs5lb-Lio6u0IQq4tzvHNpTQ&signed_in=true&callback=initMap" async defer>
+</script>
   </head>
 
 <body>
@@ -105,7 +161,7 @@ while($row = mysql_fetch_array($passengerList_query)){
                             <h3 class="text-center">
                                 Results
                             </h3>
-                            <div id="distanceAmount"></div>
+
                             <div id="dvDistance"></div>
                         </div>
                         <!-- End Title -->
@@ -113,22 +169,27 @@ while($row = mysql_fetch_array($passengerList_query)){
                         <!-- Start Rides info -->
 
                         <!--Google Map-->
-                        <div id="map"></div>
+<!--                        <div id="map"></div>-->
                         <!--Google Map-->
-
+                    <form>
                         <div class="ui-content">
                             <ul data-role="listview" data-inset="true">
-                                <?php
-                                while($row = mysql_fetch_array($passengerINFO_query))
-                                { ?>
+<?php
+    while($row = mysql_fetch_array($passengerINFO_query))
+    {
+        $pstart = $row['startLocation'];
+        $pdest = "The University of Queensland";?>
                                 <li data-icon="false" class="current">
-                                    <h3><?php echo "{$row['firstName']}"?>
-                                        <?php echo "{$row['lastName']}"?>
+                                    <h3><?php echo "{$row['firstName']}"?><?php echo "{$row['lastName']}"?>
+<?php echo "<script type='text/javascript'>calculateDistance('$driverStart', '$pstart');</script>"; ?>
+<?php echo "<script type='text/javascript'>calculateDistance('$pstart', '$pdest');</script>"; ?>
+
+
                                     </h3>
                                     <br/>
                                     <p><b>Location:</b> <?php echo "{$row['startLocation']}"?></p>
                                     <p><b>Departure Time:</b> <?php echo "{$row['departureTime']}"?></p>
-                                    <p><b>Destination:</b> <?php echo "UQ"?></p>
+                                    <p><b>Destination:</b> <?php echo "The University of Queensland"?></p>
                                     <p><b>Contact:</b> <?php echo "{$row['phone']}"?></p>
 <!--
                                     <p class='ui-li-aside' style="right: 2em;">
@@ -150,200 +211,6 @@ while($row = mysql_fetch_array($passengerList_query)){
 
     </section>
 </div>
-
+                    </form>
 </body>
-
-<script type="text/javascript">
-var nametag = <?php echo json_encode($username);?>;
-var mobile = <?php echo json_encode($phone);?>;
-var passpts = <?php echo json_encode($passengers_addr);?>; // passengers location, waypoints
-var startLoc = <?php echo json_encode($driverStart);?>; // driver start location
-
-var map;
-var waypts = [];
-
-var directionsDisplay;
-var directionsService;
-
-var dis = 0;
-
-var uq = "-27.4954306,153.0120301";
-
-function initMap() {
-
-  //Instantiate a directions service
-  var directionsService = new google.maps.DirectionsService;
-
-  //Create a map
-  var initcentre = new google.maps.LatLng(-27.4073899,153.0028595); //-27.4073899,153.0028595
-  var mapOptions = {
-    center: initcentre,
-    zoom: 6
-  }
-
-  map = new google.maps.Map(document.getElementById("map"), mapOptions);
-
-  //Render direction Display
-  var rendererOptions = {
-    map: map,
-    suppressMarkers: false
-  }
-  directionsDisplay = new google.maps.DirectionsRenderer(rendererOptions);
-
-  wayptsDisplay = new google.maps.InfoWindow();
-
-  calculateAndDisplayRoute(directionsService, directionsDisplay);
-}
-
-//google.maps.event.addDomListener(window, 'load', initMap);
-
-function calculateDistance(startLocation, endLocation){
-    var dis;
-    var distanceService = new google.maps.DistanceMatrixService;
-    distanceService.getDistanceMatrix({
-      origins: [startLocation],
-      destinations: [endLocation],
-      travelMode: google.maps.TravelMode.DRIVING,
-      unitSystem: google.maps.UnitSystem.METRIC,
-      avoidHighways: false,
-      avoidTolls: true
-  }, function(response, status){
-      if (status === google.maps.DistanceMatrixStatus.OK && response.rows[0].elements[0].status != "ZERO_RESULTS"){
-          var distance = response.rows[0].elements[0].distance.value;
-          dis = distance;
-          var duration = response.rows[0].elements[0].duration.value;
-          var dvDistance = document.getElementById("dvDistance");
-          var test = document.getElementById("distanceAmount");
-          test.innerHTML = dis;
-          dvDistance.innerHTML = "";
-          dvDistance.innerHTML += "Distance: " + dis;
-          dvDistance.innerHTML += "Duration: " + duration;
-
-          if(dis > 5000){
-            dvDistance.innerHTML += " greater than 5km";
-          }
-
-      }else {
-          alert("Unable to find the distance");
-      }
-  });
-    return dis;
-}
-
-function calculateAndDisplayRoute(directionsService, directionsDisplay) {
-
-  var dis = 0;
-
-  var distanceService = new google.maps.DistanceMatrixService;
-
-  var mallCenter = new google.maps.LatLng(-27.4998373,152.9724514);
-  var uq = new google.maps.LatLng(-27.4954306,153.0120301);
-  //var uq = new google.maps.LatLng(-27.4954306,153.0120301);
-  //var passby = new google.maps.LatLng(-27.501264,152.979343);
-
-
-  //Remove any Existing markers from the map
-  for(var i=0; i<waypts.length; i++){
-    waypts[i].setMap(null);
-  }
-
-//calculateDistance(startLoc, passpts[0]);
-
-  var tempStart = startLoc;
-  //Add waypoints
-  for(var i=0; i<passpts.length; i++){//passpts = waypoints addresses
-    distanceService.getDistanceMatrix({
-      origins: [tempStart],
-      destinations: [passpts[i]],
-      travelMode: google.maps.TravelMode.DRIVING,
-      unitSystem: google.maps.UnitSystem.METRIC,
-      avoidHighways: false,
-      avoidTolls: true
-  }, function(response, status){
-      if (status === google.maps.DistanceMatrixStatus.OK && response.rows[0].elements[0].status != "ZERO_RESULTS"){
-          var distance = response.rows[0].elements[0].distance.value;
-          dis = distance;
-          var duration = response.rows[0].elements[0].duration.value;
-          var dvDistance = document.getElementById("dvDistance");
-          //var test = document.getElementById("distanceAmount");
-          //test.innerHTML = dis;
-          dvDistance.innerHTML = "";
-          dvDistance.innerHTML += "Distance: " + dis;
-          dvDistance.innerHTML += "Duration: " + duration;
-
-          if(dis > 5000){
-            dvDistance.innerHTML += " greater than 5km";
-          }
-          else {
-              var test = document.getElementById("distanceAmount");
-              test.innerHTML += dis;
-              //test.innerHTML += passpts[i];
-              waypts.push({
-                  location: response.destinationAddresses[0],
-                  stopover: true
-              });
-              test.innerHTML += waypts[waypts.length - 1].location;
-          }
-
-         directionsService.route({
-    origin: startLoc, // need changes to current location
-    destination: uq,
-    waypoints: waypts,
-    optimizeWaypoints: true,
-    travelMode: google.maps.TravelMode.DRIVING,
-    unitSystem: google.maps.UnitSystem.METRIC,
-    avoidHighways: false,
-    avoidTolls: true
-  }, function(response, status) {
-    if (status === google.maps.DirectionsStatus.OK) {
-      directionsDisplay.setDirections(response);
-
-    } else {
-      window.alert('Directions request failed due to ' + status);
-    }
-  });
-
-
-      }else {
-          alert("Unable to find the distance");
-      }
-  });
-
-//      calculateDistance(tempStart, passpts[i]);
-//      var test = document.getElementById("distanceAmount");
-//      test.innerHTML = calculateDistance(tempStart, passpts[i]);
-
-//      if (dis < 5000){
-//        var test = document.getElementById("distanceAmount");
-//        waypts.push({
-//        location: passpts[i],
-//        stopover: true
-//        });
-//        test.innerHTML += waypts[waypts.length - 1].location;
-//      }
-      tempStart = passpts[i];
-  }
-
-//  directionsService.route({
-//    origin: startLoc, // need changes to current location
-//    destination: uq,
-//    waypoints: waypts,
-//    optimizeWaypoints: true,
-//    travelMode: google.maps.TravelMode.DRIVING,
-//    unitSystem: google.maps.UnitSystem.METRIC,
-//    avoidHighways: false,
-//    avoidTolls: true
-//  }, function(response, status) {
-//    if (status === google.maps.DirectionsStatus.OK) {
-//      directionsDisplay.setDirections(response);
-//
-//    } else {
-//      window.alert('Directions request failed due to ' + status);
-//    }
-//  });
-}
-
-</script>
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDubSC2d1uLs5lb-Lio6u0IQq4tzvHNpTQ&signed_in=true&callback=initMap" async defer>
-</script>
 </html>
