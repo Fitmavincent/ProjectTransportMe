@@ -24,9 +24,9 @@ while($row = mysql_fetch_array($driver_query)){
 }
 
 
-$passengerINFO_query = mysql_query("SELECT startLocation, firstName, lastName, phone FROM user, request	WHERE user.userID = request.passengerID limit 4");
+$passengerINFO_query = mysql_query("SELECT userID, startLocation, firstName, lastName, phone FROM user, request	WHERE user.userID = request.passengerID limit 4");
 
-$passengerList_query = mysql_query("SELECT startLocation, firstName, lastName, phone FROM user, request	WHERE user.userID = request.passengerID limit 4");
+$passengerList_query = mysql_query("SELECT userID, startLocation, firstName, lastName, phone FROM user, request	WHERE user.userID = request.passengerID limit 4");
 $passengers_addr = array();
 $username = array();
 $phone = array();
@@ -72,67 +72,65 @@ while($row = mysql_fetch_array($passengerList_query)){
     </style>
 
 <script type="text/javascript">
-var nametag = <?php echo json_encode($username);?>;
-var mobile = <?php echo json_encode($phone);?>;
-var passpts = <?php echo json_encode($passengers_addr);?>; // passengers location, waypoints
-var startLoc = <?php echo json_encode($driverStart);?>; // driver start location
+//var nametag = <?php //echo json_encode($username);?>;
+//var mobile = <?php //echo json_encode($phone);?>;
+//var passpts = <?php //echo json_encode($passengers_addr);?>; // passengers location, waypoints
+//var startLoc = <?php //echo json_encode($driverStart);?>; // driver start location
+//
+//var map;
+//var waypts = [];
+//
+//var directionsDisplay;
+//var directionsService;
+//
+//var uq = "-27.4954306,153.0120301";
+//
+//function initMap(){
+//
+//}
+//
+//
+//function calculateDistance(startLocation, endLocation){
+//    //var dis;
+//    var distanceService = new google.maps.DistanceMatrixService;
+//    distanceService.getDistanceMatrix({
+//      origins: [startLocation],
+//      destinations: [endLocation],
+//      travelMode: google.maps.TravelMode.DRIVING,
+//      unitSystem: google.maps.UnitSystem.METRIC,
+//      avoidHighways: false,
+//      avoidTolls: true
+//  }, function(response, status){
+//      if (status === google.maps.DistanceMatrixStatus.OK && response.rows[0].elements[0].status != "ZERO_RESULTS"){
+//          var origin = response.originAddresses;
+//          var destination = response.destinationAddresses;
+//          var distance = response.rows[0].elements[0].distance.value;
+//          var distanceText = response.rows[0].elements[0].distance.text;
+//          dis = distance;
+//          var duration = response.rows[0].elements[0].duration.value;
+//          var dvDistance = document.getElementById("dvDistance");
+////          var dvTest = document.getElementById("dvTest");
+////          var dvShow = document.getElementById("gdata");
+//
+////          dvShow.innerHTML += origin + ": " + distanceText;
+////          test.innerHTML = dis;
+////          dvDistance.innerHTML = "";
+//          dvDistance.innerHTML += "Distance: " + dis + "; ";
+////          dvDistance.innerHTML += "Duration: " + duration;
+////          if(dis > 5000){
+////            dvDistance.innerHTML = dis + " d greater than 5km";
+////          }
+////          if (dis < 8000){
+////            //dvDistance.innerHTML += dis + "d less than 5km";
+////            dvTest.innerHTML += "<ul data-role='listview' data-inset='true'><li data-icon='false' class='current'><p><b><a>" + destination + dis + "</a></b></p></li></ul>";
+////        }
+//
+//      }else {
+//          alert("Unable to find the distance");
+//      }
+//  });
+//}
 
-var map;
-var waypts = [];
-
-var directionsDisplay;
-var directionsService;
-
-var uq = "-27.4954306,153.0120301";
-
-function initMap(){
-
-}
-
-
-function calculateDistance(startLocation, endLocation){
-    //var dis;
-    var distanceService = new google.maps.DistanceMatrixService;
-    distanceService.getDistanceMatrix({
-      origins: [startLocation],
-      destinations: [endLocation],
-      travelMode: google.maps.TravelMode.DRIVING,
-      unitSystem: google.maps.UnitSystem.METRIC,
-      avoidHighways: false,
-      avoidTolls: true
-  }, function(response, status){
-      if (status === google.maps.DistanceMatrixStatus.OK && response.rows[0].elements[0].status != "ZERO_RESULTS"){
-          var origin = response.originAddresses;
-          var destination = response.destinationAddresses;
-          var distance = response.rows[0].elements[0].distance.value;
-          var distanceText = response.rows[0].elements[0].distance.text;
-          dis = distance;
-          var duration = response.rows[0].elements[0].duration.value;
-          var dvDistance = document.getElementById("dvDistance");
-//          var dvTest = document.getElementById("dvTest");
-//          var dvShow = document.getElementById("gdata");
-
-//          dvShow.innerHTML += origin + ": " + distanceText;
-//          test.innerHTML = dis;
-//          dvDistance.innerHTML = "";
-          dvDistance.innerHTML += "Distance: " + dis + "; ";
-//          dvDistance.innerHTML += "Duration: " + duration;
-//          if(dis > 5000){
-//            dvDistance.innerHTML = dis + " d greater than 5km";
-//          }
-//          if (dis < 8000){
-//            //dvDistance.innerHTML += dis + "d less than 5km";
-//            dvTest.innerHTML += "<ul data-role='listview' data-inset='true'><li data-icon='false' class='current'><p><b><a>" + destination + dis + "</a></b></p></li></ul>";
-//        }
-
-      }else {
-          alert("Unable to find the distance");
-      }
-  });
-}
-
-</script>
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDubSC2d1uLs5lb-Lio6u0IQq4tzvHNpTQ&signed_in=true&callback=initMap" async defer>
 </script>
   </head>
 
@@ -171,14 +169,14 @@ function calculateDistance(startLocation, endLocation){
                         <!--Google Map-->
 <!--                        <div id="map"></div>-->
                         <!--Google Map-->
-                    <form class="form-horizontal" role="form" id="forPassenger" method='POST' action='Geolocation2.php' data-ajax="false">
+                    <form class="form-horizontal" role="form" id="forPassenger" method='POST' name="showMap" action='showMap.php' data-ajax="false">
                         <div class="ui-content">
                             <ul data-role="listview" data-inset="true">
 <?php
 function getDistance($start, $end){
-    $start = str_replace(' ', '+', $start);
-    $end = str_replace(' ', '+', $end);
-    $url = "https://maps.googleapis.com/maps/api/distancematrix/json?origins=".$start."&destinations=".$end."&mode=driving&language=en-EN&key=key=AIzaSyDubSC2d1uLs5lb-Lio6u0IQq4tzvHNpTQ&sensor=false";
+    $fstart = urlencode($start);
+    $fend = urlencode($end);
+    $url = "https://maps.googleapis.com/maps/api/distancematrix/json?origins=$fstart&destinations=$fend&mode=driving&language=en-EN&key=AIzaSyDMnOJjJdodhxLjdCNKK5kPgI5N0IXy1Xk&sensor=false";
     $ch = curl_init();
     curl_setopt($ch, CURLOPT_URL, $url);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
@@ -191,31 +189,20 @@ function getDistance($start, $end){
     return $dist;
 }
 
-
 while($row = mysql_fetch_array($passengerINFO_query)){
+    $passID = $row['userID'];
     $pstart = $row['startLocation'];
     $pdest = "The University of Queensland";
-//    $a = getDistance($driverStart, $pstart);
-//    $b = getDistance($pstart, $pdest);
-    $fPstart = urlencode($pstart);
-    $fdriverStart = urlencode($driverStart);
-    $data = file_get_contents( "https://maps.googleapis.com/maps/api/distancematrix/json?origins=$fdriverStart&destinations=$fPstart&mode=driving&language=en-EN&key=key=AIzaSyDubSC2d1uLs5lb-Lio6u0IQq4tzvHNpTQ&sensor=false");
-    $data = json_encode($data);
-    $distance = 0;
-    foreach($data->rows[0]->elements as $road){
-        $distance += $road->distance->value;
-    }
-
+    $a = getDistance($driverStart, $pstart);
+    $b = getDistance($pstart, $pdest);
+    $plusDist = $a + $b;
+    if ($plusDist < 20000){
 ?>
                                 <li data-icon="false" class="current">
                                     <h3><?php echo "{$row['firstName']}"?><?php echo "{$row['lastName']}"?>
-                                    <?php echo $distance;?>
-<!--
-<?php echo "<script type='text/javascript'>calculateDistance('$driverStart', '$pstart');</script>"; ?>
-<?php echo "<script type='text/javascript'>calculateDistance('$pstart', '$pdest');</script>"; ?>
--->
-
-
+                                    <?php //echo $a?>
+                                    <?php //echo $b;?>
+                                    <?php echo $plusDist;?>
                                     </h3>
                                     <br/>
                                     <p><b>Location:</b> <?php echo "{$row['startLocation']}"?></p>
@@ -236,9 +223,10 @@ while($row = mysql_fetch_array($passengerINFO_query)){
                                         </a>
                                     </p>
 -->
-                               <div class="ui-block-a"><button type="submit" data-theme="b" name="passSelect">Select</button></div>
+                            <?php echo "<div class='ui-block-a'><input type='submit' data-theme='b' name='$passID' value='SELECT'></div>"; ?>
                                 </li>
                                 <?php
+    }
                                 }
                                 ?>
                             </ul>
@@ -246,6 +234,10 @@ while($row = mysql_fetch_array($passengerINFO_query)){
 
 </div>
 </form>
+</div>
+</div>
+</div>
+</div>
 </section>
 </body>
 </html>
