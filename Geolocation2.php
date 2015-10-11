@@ -175,14 +175,45 @@ function calculateDistance(startLocation, endLocation){
                         <div class="ui-content">
                             <ul data-role="listview" data-inset="true">
 <?php
-    while($row = mysql_fetch_array($passengerINFO_query))
-    {
-        $pstart = $row['startLocation'];
-        $pdest = "The University of Queensland";?>
+function getDistance($start, $end){
+    $start = str_replace(' ', '+', $start);
+    $end = str_replace(' ', '+', $end);
+    $url = "https://maps.googleapis.com/maps/api/distancematrix/json?origins=".$start."&destinations=".$end."&mode=driving&language=en-EN&key=key=AIzaSyDubSC2d1uLs5lb-Lio6u0IQq4tzvHNpTQ&sensor=false";
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+    $response = curl_exec($ch);
+    curl_close($ch);
+    $response_a = json_decode($response, true);
+    $dist = $response_a['rows'][0]['elements'][0]['distance']['value'];
+    return $dist;
+}
+
+
+while($row = mysql_fetch_array($passengerINFO_query)){
+    $pstart = $row['startLocation'];
+    $pdest = "The University of Queensland";
+//    $a = getDistance($driverStart, $pstart);
+//    $b = getDistance($pstart, $pdest);
+    $fPstart = urlencode($pstart);
+    $fdriverStart = urlencode($driverStart);
+    $data = file_get_contents( "https://maps.googleapis.com/maps/api/distancematrix/json?origins=$fdriverStart&destinations=$fPstart&mode=driving&language=en-EN&key=key=AIzaSyDubSC2d1uLs5lb-Lio6u0IQq4tzvHNpTQ&sensor=false");
+    $data = json_encode($data);
+    $distance = 0;
+    foreach($data->rows[0]->elements as $road){
+        $distance += $road->distance->value;
+    }
+
+?>
                                 <li data-icon="false" class="current">
                                     <h3><?php echo "{$row['firstName']}"?><?php echo "{$row['lastName']}"?>
+                                    <?php echo $distance;?>
+<!--
 <?php echo "<script type='text/javascript'>calculateDistance('$driverStart', '$pstart');</script>"; ?>
 <?php echo "<script type='text/javascript'>calculateDistance('$pstart', '$pdest');</script>"; ?>
+-->
 
 
                                     </h3>
