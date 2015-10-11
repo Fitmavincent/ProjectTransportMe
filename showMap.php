@@ -20,7 +20,7 @@ foreach($_POST as $name => $content){
     $passID = $name;
 }
 
-$passenger_query = mysql_query("SELECT * FROM request, user WHERE (departureTime - INTERVAL 1 HOUR < '$d_time') AND (departureTime > '$d_time') AND user.userID = request.passengerID AND status = 'pending' ORDER BY departureTime");
+$passenger_query = mysql_query("SELECT * FROM request, user WHERE (departureTime - INTERVAL 1 HOUR < '$d_time') AND (departureTime > '$d_time') AND user.userID = request.passengerID AND user.userID = $passID AND status = 'pending' ORDER BY departureTime");
 
 //get Driver location
 $driverStart = "";
@@ -32,7 +32,7 @@ while($row = mysql_fetch_array($driver_query)){
 //
 //$passengerINFO_query = mysql_query("SELECT userID, startLocation, firstName, lastName, phone FROM user, request	WHERE user.userID = request.passengerID limit 4");
 
-$passengerList_query = mysql_query("SELECT userID, startLocation, firstName, lastName, phone FROM user, request	WHERE user.userID = request.passengerID AND user.userID = $passID limit 4");
+$passengerList_query = mysql_query("SELECT userID, startLocation, firstName, lastName, phone FROM user, request	WHERE user.userID = request.passengerID AND user.userID = '$passID' limit 4");
 $passengers_addr = array();
 $username = array();
 $phone = array();
@@ -103,7 +103,7 @@ while($row = mysql_fetch_array($passengerList_query)){
                         <div id="mainTitle">
 
                             <h3 class="text-center">
-                                Results<?php echo $passID;?>
+                                Results<?php //echo $passID;?>
                             </h3>
                             <div id="distanceAmount"></div>
                             <div id="dvDistance"></div>

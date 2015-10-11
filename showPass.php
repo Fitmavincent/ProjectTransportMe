@@ -202,7 +202,7 @@ while($row = mysql_fetch_array($passengerINFO_query)){
                                     <h3><?php echo "{$row['firstName']}"?><?php echo "{$row['lastName']}"?>
                                     <?php //echo $a?>
                                     <?php //echo $b;?>
-                                    <?php echo $plusDist;?>
+                                    <?php //echo $plusDist;?>
                                     </h3>
                                     <br/>
                                     <p><b>Location:</b> <?php echo "{$row['startLocation']}"?></p>

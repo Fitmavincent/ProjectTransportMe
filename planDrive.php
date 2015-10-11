@@ -108,7 +108,7 @@ $address = $_SESSION['address'];
 
 
                         <!-- Destination -->
-                        <form class="form-horizontal" role="form" id="forPassenger" method='POST' action='Geolocation2.php' data-ajax="false">
+                        <form class="form-horizontal" role="form" id="forPassenger" method='POST' action='showPass.php' data-ajax="false">
                             <!-- Start Location -->
                             <div id="startlocation">
                                 <label for="inputPassword3">Start Location:</label>
