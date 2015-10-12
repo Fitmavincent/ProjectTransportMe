@@ -32,7 +32,7 @@ while($row = mysql_fetch_array($driver_query)){
 //
 //$passengerINFO_query = mysql_query("SELECT userID, startLocation, firstName, lastName, phone FROM user, request	WHERE user.userID = request.passengerID limit 4");
 
-$passengerList_query = mysql_query("SELECT userID, startLocation, firstName, lastName, phone FROM user, request	WHERE user.userID = request.passengerID AND user.userID = '$passID' limit 4");
+$passengerList_query = mysql_query("SELECT userID, startLocation, firstName, lastName, phone FROM user, request	WHERE user.userID = request.passengerID AND user.userID = '$passID'");
 $passengers_addr = array();
 $username = array();
 $phone = array();
@@ -200,60 +200,34 @@ function calculateDistance(startLocation, endLocation){
 
 function calculateAndDisplayRoute(directionsService, directionsDisplay) {
 
-  var dis = 0;
-
-  var distanceService = new google.maps.DistanceMatrixService;
-
-  var mallCenter = new google.maps.LatLng(-27.4998373,152.9724514);
-  var uq = new google.maps.LatLng(-27.4954306,153.0120301);
+  //var mallCenter = new google.maps.LatLng(-27.4998373,152.9724514);
+  //var uq = new google.maps.LatLng(-27.4954306,153.0120301);
   //var uq = new google.maps.LatLng(-27.4954306,153.0120301);
   //var passby = new google.maps.LatLng(-27.501264,152.979343);
-
 
   //Remove any Existing markers from the map
   for(var i=0; i<waypts.length; i++){
     waypts[i].setMap(null);
   }
 
-  var tempStart = startLoc;
-  //Add waypoints
+  calculateDistance(startLoc, passpts[3]);
+
+  //var tempStart = startLoc;
+
+  //Add waypoints into waypts array
   for(var i=0; i<passpts.length; i++){//passpts = waypoints addresses
-    distanceService.getDistanceMatrix({
-      origins: [tempStart],
-      destinations: [passpts[i]],
-      travelMode: google.maps.TravelMode.DRIVING,
-      unitSystem: google.maps.UnitSystem.METRIC,
-      avoidHighways: false,
-      avoidTolls: true
-  }, function(response, status){
-      if (status === google.maps.DistanceMatrixStatus.OK && response.rows[0].elements[0].status != "ZERO_RESULTS"){
-          var distance = response.rows[0].elements[0].distance.value;
-          dis = distance;
-          var duration = response.rows[0].elements[0].duration.value;
-//          var dvDistance = document.getElementById("dvDistance");
-//          //var test = document.getElementById("distanceAmount");
-//          //test.innerHTML = dis;
-//          dvDistance.innerHTML = "";
-//          dvDistance.innerHTML += "Distance: " + dis;
-//          dvDistance.innerHTML += "Duration: " + duration;
+//      calculateDistance(tempStart, passpts[i]);
+      waypts.push({
+        location: passpts[i],
+        stopover: true
+      });
+      //tempStart = passpts[i];
+    }
 
-          if(dis > 8000){
-//            dvDistance.innerHTML += " greater than 5km";
-          }
-          else{
-//              var test = document.getElementById("distanceAmount");
-//              test.innerHTML += dis;
-              //test.innerHTML += passpts[i];
-              waypts.push({
-                  location: response.destinationAddresses[0],
-                  stopover: true
-              });
-//              test.innerHTML += waypts[waypts.length - 1].location;
-          }
 
-    directionsService.route({
-    origin: startLoc, // need changes to current location
-    destination: uq,
+  directionsService.route({
+    origin: startLoc, //driver current location / registered address
+    destination: uq, //preset to UQ
     waypoints: waypts,
     optimizeWaypoints: true,
     travelMode: google.maps.TravelMode.DRIVING,
@@ -268,46 +242,8 @@ function calculateAndDisplayRoute(directionsService, directionsDisplay) {
       window.alert('Directions request failed due to ' + status);
     }
   });
-
-
-      }else {
-          alert("Unable to find the distance");
-      }
-  });
-
-//      calculateDistance(tempStart, passpts[i]);
-//      var test = document.getElementById("distanceAmount");
-//      test.innerHTML = calculateDistance(tempStart, passpts[i]);
-
-//      if (dis < 5000){
-//        var test = document.getElementById("distanceAmount");
-//        waypts.push({
-//        location: passpts[i],
-//        stopover: true
-//        });
-//        test.innerHTML += waypts[waypts.length - 1].location;
-//      }
-      tempStart = passpts[i];
-  }
-
-//  directionsService.route({
-//    origin: startLoc, // need changes to current location
-//    destination: uq,
-//    waypoints: waypts,
-//    optimizeWaypoints: true,
-//    travelMode: google.maps.TravelMode.DRIVING,
-//    unitSystem: google.maps.UnitSystem.METRIC,
-//    avoidHighways: false,
-//    avoidTolls: true
-//  }, function(response, status) {
-//    if (status === google.maps.DirectionsStatus.OK) {
-//      directionsDisplay.setDirections(response);
-//
-//    } else {
-//      window.alert('Directions request failed due to ' + status);
-//    }
-//  });
 }
+
 
 </script>
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDubSC2d1uLs5lb-Lio6u0IQq4tzvHNpTQ&signed_in=true&callback=initMap" async defer>

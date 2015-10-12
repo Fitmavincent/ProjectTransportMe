@@ -139,7 +139,7 @@ $address = $_SESSION['address'];
                             <!-- End Start Location -->
                             <div id="destination">
                                 <label for="inputPassword3">Destination:</label>
-                                <input type="text" class="form-control boxNotDriving" id="destination" name="destination" value="The University of Queensland">
+                                <input type="text" class="form-control boxNotDriving" id="destination" name="destination" value="The University of Queensland" readonly>
                                 <div class="ui-grid-solo">
                             </div>
                             <!-- End Destination -->
