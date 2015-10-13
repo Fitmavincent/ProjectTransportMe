@@ -118,25 +118,66 @@ $address = $_SESSION['address'];
                             </div>
                             </div>
                             <!--Start of Geolocation-->
-                            <script>
+                            <script type="text/javascript">
                                 var x = document.getElementById("startpoint");
+//                                function getLocation() {
+//                                    if (navigator.geolocation) {
+//                                        navigator.geolocation.getCurrentPosition(showPosition);
+//                                    } else {
+//                                        x.value = "Geolocation is not supported by this browser.";
+//                                    }
+//                                }
+//                                function showPosition(position) {
+//                                    var pos = {
+//                                        lat: position.coords.latitude,
+//                                        lng: position.coords.longitude
+//                                    };
+//                                    x.value = pos.lat + ", " + pos.lng;
+//                                }
+                                var x = document.getElementById("startpoint");
+
                                 function getLocation() {
                                     if (navigator.geolocation) {
                                         navigator.geolocation.getCurrentPosition(showPosition);
                                     } else {
-                                        x.value = "Geolocation is not supported by this browser.";
+                                        window.alert("Geolocation is not supported by this browser.");
                                     }
                                 }
+
                                 function showPosition(position) {
                                     var pos = {
                                         lat: position.coords.latitude,
                                         lng: position.coords.longitude
                                     };
-                                    x.value = pos.lat + ", " + pos.lng;
+                                    var lat = encodeURI(pos.lat);
+                                    var lng = encodeURI(pos.lng);
+var url = "https://maps.google.com/maps/api/geocode/json?latlng=" + lat + "," + lng + "&key=AIzaSyDMnOJjJdodhxLjdCNKK5kPgI5N0IXy1Xk&sensor=false&language=en-EN";
+                                    $.getJSON(url, function(data){
+                                         var faddr = data.results[0].formatted_address;
+                                             x.value = faddr;
+                                    });
+
+//
+////                                    var latlng = {lat: pos.lat, lng: pos.lng};
+//                                    x.value = pos.lat + ", " + pos.lng;
+////                                    x.value = latlng;
+////                                    getAddress(latlng);
+//
                                 }
                             </script>
                             <!--End of Geolocation-->
                             <!-- End Start Location -->
+
+<?php
+//function reverseGeocode($lat, $lng){
+//    $url = "https://maps.google.com/maps/api/geocode/json?latlng=$lat,$lng&key=AIzaSyDMnOJjJdodhxLjdCNKK5kPgI5N0IXy1Xk&sensor=false&language=en-EN";
+//    $data = file_get_contents($url);
+//    $json_data = json_decode($data, true);
+//    if(is_array($json_data)&& $json_data['Status']['code']==200){
+//        $faddress = $json_data->results[0]->formatted_address;
+//    }
+//}
+?>
                             <div id="destination">
                                 <label for="inputPassword3">Destination:</label>
                                 <input type="text" class="form-control boxNotDriving" id="destination" name="destination" value="The University of Queensland" readonly>
